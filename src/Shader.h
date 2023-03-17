@@ -50,9 +50,17 @@ public:
     virtual V2F vertex_shader(const Vertex &vertex);
 };
 
-struct Light {
+struct PointLight {
     Eigen::Vector3f position;
     Eigen::Vector3f intensity;
+
+    Eigen::Vector3f ambient;
+    Eigen::Vector3f diffuse;
+    Eigen::Vector3f specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 class FragmentShader {
@@ -65,7 +73,8 @@ class FragmentShader {
     Eigen::Vector3f ka_default;
     Eigen::Vector3f kd_default;
     Eigen::Vector3f ks_default;
-    // PointLight light;
+    float Ns;
+    std::vector<PointLight> lights;
 public:
     FragmentShader();
 
@@ -81,4 +90,9 @@ public:
     void set_ka(Eigen::Vector3f ka);
     void set_kd(Eigen::Vector3f kd);
     void set_ks(Eigen::Vector3f ks);
+    void set_Ns(float Ns);
+
+    void reset_texture();
+
+    int add_point_light(PointLight light);
 };

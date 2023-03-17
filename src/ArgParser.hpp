@@ -196,7 +196,7 @@ private:
                     }
                 }
                 else if (argv[i][0] == '-') {
-                    int len = strlen(argv[i]);
+                    int len = static_cast<int>(strlen(argv[i]));
                     for (int ind = 1; ind < len; ++ind) {
                         bool is_found = false;
                         for (auto &opt : options) {

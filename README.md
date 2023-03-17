@@ -18,12 +18,15 @@ Only tested with Visual Studio 2022 community on Windows11.
 ## Implemented Contents
 - Basic pipeline (vertex shader -> rasterization -> fragment shader)
 - Perspective projection correction
-- Diffuse/Specular/Normal/Height texture mapping
+- Diffuse/Specular/Normal texture mapping
 - Surround camera
+- Early-Z
 
 ## Case
-![](./img/cyborg.gif#pic_center)
-![](./img/rock.png)
+![](./img/cyborg.png)  
+![](./img/bunny.png)  
+![](./img/2b.png)  
+![](./img/crate.png)  
 
 ## Usege
 compile  
@@ -36,14 +39,13 @@ cmake --build . --config Release
 
 run
 ```
-# Note: Use '/' in path.
 ./SimpleSoftRenderer  [model_path]
 ```
 
 ## Shortcomings
 - Not fully tested
 - "Real-time" rendering is laggy(Implementation may be too complicated)(Compiling in Release mode can solve this problem to a certain extent)
-- Only support .obj model with .mtl file and only read ka/kd/ks/Map_Kd/Map_Bump/Map_Ks item in .mtl file
+- Only support .obj model with .mtl file and only read ka/kd/ks/Ns/Map_Kd/Map_Bump/Map_Ks item in .mtl file
 
 ## Reference
 - [LearnOpenGL](https://github.com/JoeyDeVries/LearnOpenGL)

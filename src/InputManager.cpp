@@ -57,10 +57,10 @@ void InputManager::process_input_for_surround_camera(SurroundCamera *camera) {
             camera->move_camera(-mouse_delta_x * 0.1f, -mouse_delta_y * 0.1f);
         }
         if (keys[ImGuiKey_W]) {
-            camera->modify_fov(-0.1);
+            camera->modify_fov(-0.1f);
         }
         if (keys[ImGuiKey_S]) {
-            camera->modify_fov(0.1);
+            camera->modify_fov(0.1f);
         }
     }
 }

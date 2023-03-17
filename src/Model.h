@@ -23,6 +23,4 @@ public:
     std::string directory;
 
     Model(const std::string &path);
-
-    void render(FrameBuf *buf, VertexShader &vs, FragmentShader &fs);
 };

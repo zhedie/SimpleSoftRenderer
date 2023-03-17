@@ -30,4 +30,6 @@ public:
 
     void move_camera(float delta_phi, float delta_theta);
     void modify_fov(float delta_fov);
+
+    void set_surround_point(Eigen::Vector3f surround_point);
 };

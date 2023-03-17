@@ -1,6 +1,18 @@
 #include "Shader.h"
 
 Eigen::Vector4f Texture::get_value(float u, float v) {
+    while (u > 1){
+        u -= 1;
+    }
+    while (v > 1) {
+        v -= 1;
+    }
+    while (u < 0) {
+        u += 1;
+    }
+    while (v < 0) {
+        v += 1;
+    }
     int index = static_cast<int>(width * u) + static_cast<int>(v * height - 1) * width;
     if (index < 0 || index > width * height) {
         return Eigen::Vector4f(0.f, 0.f, 0.f, 0.f);
@@ -74,19 +86,9 @@ Eigen::Vector4f FragmentShader::fragment_shader(const V2F &vertex) {
         specular_color << value.x(), value.y(), value.z();
     }
 
-
     Eigen::Vector3f ka = ka_default;
     Eigen::Vector3f kd = (diffuse_tex != nullptr) ? diffuse_color / 255.f : kd_default;
     Eigen::Vector3f ks = (specular_tex != nullptr) ? specular_color / 255.f : ks_default;
-
-    // auto l1 = Light{{-20, 20, 20}, {500, 500, 500}};
-    auto l2 = Light{{-20, 20, 0}, {500, 500, 500}};
-
-    // std::vector<Light> lights = {l1, l2};
-    std::vector<Light> lights = {l2};
-    Eigen::Vector3f amb_light_intensity{10, 10, 10};
-
-    float p = 150;
 
     Eigen::Vector3f color = (diffuse_tex != nullptr) ? diffuse_color : vertex.color;
     Eigen::Vector3f point = vertex.viewspace_pos;
@@ -128,12 +130,13 @@ Eigen::Vector4f FragmentShader::fragment_shader(const V2F &vertex) {
         Eigen::Vector3f eye_dir = (eye_pos - point).normalized();
         Eigen::Vector3f halfvec = (eye_dir + light_dir).normalized();
         
+        float attenuation = 1.0f / (light.constant + light.linear * distance + light.quadratic * distance * distance);
+        // Eigen::Vector3f ambient = light.ambient.cwiseProduct(ka.norm() < 0.01f ? kd : ka);
+        Eigen::Vector3f ambient = light.ambient.cwiseProduct(diffuse_tex == nullptr ? ka : kd);
+        Eigen::Vector3f diffuse = kd.cwiseProduct(light.diffuse) * std::max(0.0, static_cast<double>(light_dir.dot(normal)));
+        Eigen::Vector3f specular = ks.cwiseProduct(light.specular) * std::pow(std::max(0.0, static_cast<double>(halfvec.dot(normal))), Ns);
 
-        Eigen::Vector3f ambient = ka.cwiseProduct(amb_light_intensity);
-        Eigen::Vector3f diffuse = kd.cwiseProduct(light.intensity) / (distance * distance) * std::max(0.0, static_cast<double>(light_dir.dot(normal)));
-        Eigen::Vector3f specular = ks.cwiseProduct(light.intensity) / (distance * distance) * std::pow(std::max(0.0, static_cast<double>(halfvec.dot(normal))), p);
-
-        result_color += ambient + diffuse + specular;
+        result_color += (ambient + diffuse + specular) * attenuation;
     }
 
     result_color *= 255.f;
@@ -169,4 +172,19 @@ void FragmentShader::set_kd(Eigen::Vector3f kd) {
 }
 void FragmentShader::set_ks(Eigen::Vector3f ks) {
     ks_default = ks;
+}
+void FragmentShader::set_Ns(float Ns) {
+    this->Ns = Ns;
+}
+
+void FragmentShader::reset_texture() {
+    diffuse_tex = nullptr;
+    specular_tex = nullptr;
+    normal_tex = nullptr;
+    height_tex = nullptr;
+}
+
+int FragmentShader::add_point_light(PointLight light) {
+    lights.emplace_back(std::move(light));
+    return static_cast<int>(lights.size()) - 1;
 }

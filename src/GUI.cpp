@@ -10,13 +10,15 @@ GLFWwindow* create_window(int width, int height, std::string title) {
     return window;
 }
 
-GUI::GUI(GLFWwindow *window) {
+GUI::GUI(GLFWwindow *window, Config *config) {
     const char *glsl_version = "#version 330";
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGui::StyleColorsDark();
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
+
+    this->config = config;
 }
 void GUI::destroy() {
     ImGui_ImplOpenGL3_Shutdown();
@@ -29,6 +31,14 @@ void GUI::window() {
     ImGui::NewFrame();
 
 }
+
+void GUI::show_settings_window() {
+    if (ImGui::Begin("Settings")) {
+        ImGui::SliderFloat("Camera Surround Point Y", &config->camera_surround_point_y, 0, 10);
+        ImGui::SliderFloat("Model Scale", &config->model_scale, 1, 5);
+    } ImGui::End();
+}
+
 void GUI::set_frame(GLuint frame) {
     ImDrawList *drawlist = ImGui::GetBackgroundDrawList();
     drawlist->AddImage((void*)(intptr_t)frame, ImVec2(0, 0), ImVec2(WIDTH, HEIGHT));

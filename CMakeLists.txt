@@ -21,17 +21,22 @@ file(GLOB SRC_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/stb_image.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/SurroundCamera.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/FrameBuf.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Model.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Mesh.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/Shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/InputManager.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/GUI.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/Renderer.cpp
 )
 
 file (GLOB IMGUI_SOURCES
     ${DEPENDENCY_PATH}/imgui/*.cpp
 )
+
+if (WIN32)
+    # add_compile_options(/W4)
+    add_compile_options(/wd4819)
+endif()
 
 add_executable(${PROJECT_NAME} 
     "${SRC_SOURCES}"

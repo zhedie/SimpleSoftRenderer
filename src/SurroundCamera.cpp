@@ -136,3 +136,24 @@ void SurroundCamera::modify_fov(float delta_fov) {
         fov = 45;
     }
 }
+
+void SurroundCamera::set_surround_point(Eigen::Vector3f _surround_point) {
+    if (this->surround_point == _surround_point) {
+        return;
+    }
+    this->surround_point = _surround_point;
+    Eigen::Vector3f towards = surround_point - position;
+    distance = towards.norm();
+    theta = static_cast<float>(std::acos((-towards.y()) / distance) / M_PI * 180);
+    phi = static_cast<float>(std::acos((-towards.z()) / (distance * std::sin(radian(theta))))  / M_PI * 180);
+    if (towards.x() > 0) {
+        phi = -phi;
+    }
+    if (theta < 5) {
+        theta = 5;
+    }
+    else if (theta > 175) {
+        theta = 175;
+    }
+    update_camera();
+}

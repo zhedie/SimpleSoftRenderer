@@ -1,2 +1,5 @@
 repeal/
 build/
+.gitignore
+src_bak/
+models/NieR2B

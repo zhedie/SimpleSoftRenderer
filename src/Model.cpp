@@ -4,6 +4,7 @@ static Texture texture_from_file(const char *path, const std::string &directory)
     std::string filename = std::string(path);
     filename = directory + '/' + filename;
     int width, height, nr_components;
+    stbi_set_flip_vertically_on_load(true);
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nr_components, 0);
 
     Texture texture;
@@ -27,6 +28,7 @@ static Texture texture_from_file(const char *path, const std::string &directory)
                 texture.data[4 * i + 1] = data[4 * i + 1];
                 texture.data[4 * i + 2] = data[4 * i + 2];
                 texture.data[4 * i + 3] = data[4 * i + 3];
+                // texture.data[4 * i + 3] = 0xff;
             }
         }
         texture.width = width;
@@ -48,7 +50,12 @@ void Model::load_model(const std::string &path) {
         return;
     }
 
-    directory = path.substr(0, path.find_last_of('/'));
+    size_t n = path.find_last_of('/');
+    if (n >= path.size()) {
+        n = path.find_last_of('\\');
+    }
+    directory = path.substr(0, n);
+
     process_node(scene->mRootNode, scene);
 }
 
@@ -110,9 +117,9 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
     textures.insert(textures.end(), diffuse_maps.begin(), diffuse_maps.end());
     std::vector<Texture> specular_maps = load_material_textures(material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specular_maps.begin(), specular_maps.end());
-    std::vector<Texture> normal_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_normal");
+    std::vector<Texture> normal_maps = load_material_textures(material, aiTextureType_NORMALS, "texture_normal");
     textures.insert(textures.end(), normal_maps.begin(), normal_maps.end());
-    std::vector<Texture> height_maps = load_material_textures(material, aiTextureType_AMBIENT, "texture_height");
+    std::vector<Texture> height_maps = load_material_textures(material, aiTextureType_HEIGHT, "texture_height");
     textures.insert(textures.end(), height_maps.begin(), height_maps.end());
 
     aiColor3D color;
@@ -122,8 +129,10 @@ Mesh Model::process_mesh(aiMesh *mesh, const aiScene *scene) {
     Eigen::Vector3f kd = Eigen::Vector3f(color.r, color.g, color.b);
     material->Get(AI_MATKEY_COLOR_SPECULAR, color);
     Eigen::Vector3f ks = Eigen::Vector3f(color.r, color.g, color.b);
+    float Ns;
+    material->Get(AI_MATKEY_SHININESS, Ns);
 
-    return Mesh(vertices, indices, textures, ka, kd, ks);
+    return Mesh(vertices, indices, textures, ka, kd, ks, Ns);
 }
 
 std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureType type, std::string type_name) {
@@ -153,10 +162,4 @@ std::vector<Texture> Model::load_material_textures(aiMaterial *mat, aiTextureTyp
 
 Model::Model(const std::string &path) {
     load_model(path);
-}
-
-void Model::render(FrameBuf *buf, VertexShader &vs, FragmentShader &fs) {
-    for (auto &i : meshes) {
-        i.render(buf, vs, fs);
-    }
 }
