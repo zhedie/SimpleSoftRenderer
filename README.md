@@ -52,7 +52,7 @@ cmake ..
 cmake --build . --config Release
 # run
 cd Release
-./SimpleSoftRenderer
+./SoftRenderer
 ```
 
 ## Reference
