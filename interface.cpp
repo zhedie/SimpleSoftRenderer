@@ -171,7 +171,7 @@ Application* createApplication() {
     std::shared_ptr<RendererLayer> layer = std::make_shared<RendererLayer>();
     // app->pushLayer<RendererLayer>();
     app->pushLayer(layer);
-    app->setMenubarCallback([&app, &layer]() {
+    app->setMenubarCallback([app, &layer]() {
         if (ImGui::BeginMenu("File")) {
             if (ImGui::MenuItem("Exit")) {
                 app->stop();

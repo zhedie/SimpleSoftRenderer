@@ -1,52 +1,58 @@
 # Simple Soft Renderer
-This is a simple soft rasterization renderer written in C++. It implements simple rendering pipeline.  
+
+A soft renderer written in C++. It implements a basic rasterizer and a ray tracer.
 
 ## Dependency
+
 - [assimp](https://github.com/assimp/assimp)
-- [stb](https://github.com/nothings/stb)
-- [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page)
-- [Dear ImGui](https://github.com/ocornut/imgui)
+- [stb_image](https://github.com/nothings/stb)
+- [glm](https://github.com/g-truc/glm)
+- [ImGui](https://github.com/ocornut/imgui)
+- [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog)
 - [GLFW](https://github.com/glfw/glfw)
+- [vulkan](https://www.vulkan.org/)
+- [Walnut](https://github.com/StudioCherno/Walnut)
 
-It uses [assimp](https://github.com/assimp/assimp) to load 3d models and use [stb](https://github.com/nothings/stb) to load texture(picture), using [Eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) as mathematics library.  
-GUI drawing uses [Dear ImGui](https://github.com/ocornut/imgui) with [GLFW](https://github.com/glfw/glfw) and opengl(opengl is only used to display the results and does not involve the rendering process)  
-
+It uses [assimp](https://github.com/assimp/assimp) to load 3d models and use [stb](https://github.com/nothings/stb) to load texture(picture), using [glm](https://github.com/g-truc/glm) as mathematics library.  
+[ImGui](https://github.com/ocornut/imgui), [ImGuiFileDialog](https://github.com/aiekick/ImGuiFileDialog), [Walnut](https://github.com/StudioCherno/Walnut), [GLFW](https://github.com/glfw/glfw) and [vulkan](https://www.vulkan.org/) are used for GUI drawing.
 
 ## Environment
-Only tested with Visual Studio 2022 community on Windows11.  
 
-## Implemented Contents
-- Basic pipeline (vertex shader -> rasterization -> fragment shader)
-- Perspective projection correction
-- Diffuse/Specular/Normal texture mapping
-- Surround camera
-- Early-Z
+Only tested with Visual Studio 2022 community on Windows11.  
+Cmake version 3.17  
+
+## Content
+- Basic rasterization rendering pipeline  
+- Ray tracing rendering of simple objects
+- Scene multi-object control and rendering
 
 ## Case
-![](./img/cyborg.png)  
-![](./img/bunny.png)  
-![](./img/2b.png)  
-![](./img/crate.png)  
+Rasterizer
+![](./screenshot/2B-Rasterization.png)
+![](./screenshot/2B-Rasterization1.png)
+![](./screenshot/cyborg-Rasterization.png)
+RayTracer
+![](./screenshot/crate-RayTracing.png)
+obj load
+![](screenshot/file-selection.png)
 
 ## Usege
-compile  
+
+You need to install vulkan and its accompanying third-party library (glm) first.
+
 ```
+# compile
 mkdir build
 cd build
 cmake ..
 cmake --build . --config Release
+# run
+cd Release
+./SimpleSoftRenderer
 ```
-
-run
-```
-./SimpleSoftRenderer  [model_path]
-```
-
-## Shortcomings
-- Not fully tested
-- "Real-time" rendering is laggy(Implementation may be too complicated)(Compiling in Release mode can solve this problem to a certain extent)
-- Only support .obj model with .mtl file and only read ka/kd/ks/Ns/Map_Kd/Map_Bump/Map_Ks item in .mtl file
 
 ## Reference
+
 - [LearnOpenGL](https://github.com/JoeyDeVries/LearnOpenGL)
 - [Games101 course](https://www.bilibili.com/video/BV1X7411F744/?spm_id_from=333.999.0.0&vd_source=5ce17db761bbe7d09338840ac32c2ed9)
+- [RayTracing](https://www.youtube.com/watch?v=gfW1Fhd9u9Q&list=PLlrATfBNZ98edc5GshdBtREv5asFW3yXl&index=1) by the Cherno
