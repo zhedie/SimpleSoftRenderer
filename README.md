@@ -29,7 +29,7 @@ Cmake version 3.17
 ## Case
 Rasterizer
 ![](./screenshot/2B-Rasterization.png)
-![](./screenshot/2B-Rasterization1.png)
+![](./screenshot/2B-Rasterization-1.png)
 ![](./screenshot/cyborg-Rasterization.png)
 RayTracer
 ![](./screenshot/crate-RayTracing.png)
@@ -38,9 +38,13 @@ obj load
 
 ## Usege
 
-You need to install vulkan and its accompanying third-party library (glm) first.
+You need to install vulkan and its accompanying third-party library (glm) first.  
+assimp .dll is compiled by vs2022 under debug mode.
 
 ```
+# download
+git clone git@github.com:zhedie/SoftRenderer.git
+cd SoftRenderer
 # compile
 mkdir build
 cd build
